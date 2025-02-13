@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginSignup from './pages/LoginSignup';
 import Dashboard from './pages/Dashboard';
 
-const App = () => {
+function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication status
   const [user, setUser] = useState(null); // Track the logged-in user details
 
@@ -20,25 +20,12 @@ const App = () => {
 
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100">
-        <Routes>
-          {/* Login and Signup Page */}
-          <Route path="/" element={<LoginSignup onLogin={handleLogin} />} />
-          {/* Dashboard Route */}
-          <Route
-            path="/dashboard"
-            element={
-              isAuthenticated ? (
-                <Dashboard user={user} />
-              ) : (
-                <Navigate to="/" replace />
-              )
-            }
-          />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<LoginSignup onLogin={handleLogin} />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
     </Router>
   );
-};
+}
 
 export default App;
