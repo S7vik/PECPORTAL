@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { User, Book, ClipboardList, FileText } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Book, ClipboardList, FileText, Bell, Search, ChevronRight } from 'lucide-react';
 
 const Dashboard = () => {
   const [selectedSubject, setSelectedSubject] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  
   const user = {
     name: 'Satvik Raina',
     branch: 'CSE',
@@ -12,78 +14,163 @@ const Dashboard = () => {
   };
 
   const subjects = [
-    'Data Structures',
-    'Operating Systems',
-    'Database Management',
-    'Computer Networks',
+    {
+      name: 'Data Structures',
+      progress: 75,
+      color: 'from-blue-500 to-blue-600'
+    },
+    {
+      name: 'Operating Systems',
+      progress: 60,
+      color: 'from-purple-500 to-purple-600'
+    },
+    {
+      name: 'Database Management',
+      progress: 85,
+      color: 'from-emerald-500 to-emerald-600'
+    },
+    {
+      name: 'Computer Networks',
+      progress: 45,
+      color: 'from-orange-500 to-orange-600'
+    },
   ];
 
-  const handleSubjectClick = (subject) => {
-    setSelectedSubject(subject);
-  };
+  const filteredSubjects = subjects.filter(subject =>
+    subject.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const SubjectCard = ({ subject }) => (
+    <motion.div
+      whileHover={{ y: -4 }}
+      className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+    >
+      <div className={`h-2 rounded-t-xl bg-gradient-to-r ${subject.color}`} />
+      <div className="p-4">
+        <h3 className="font-semibold text-gray-800">{subject.name}</h3>
+        <div className="mt-3">
+          <div className="flex justify-between mb-1">
+            <span className="text-xs text-gray-500">Progress</span>
+            <span className="text-xs font-medium text-gray-700">{subject.progress}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-1.5">
+            <div
+              className={`h-1.5 rounded-full bg-gradient-to-r ${subject.color}`}
+              style={{ width: `${subject.progress}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  const ActionCard = ({ icon: Icon, title, color }) => (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`p-4 rounded-xl bg-gradient-to-r ${color} text-white cursor-pointer`}
+    >
+      <Icon className="w-6 h-6 mb-2" />
+      <h3 className="font-medium">{title}</h3>
+    </motion.div>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600 p-6 text-white">
-      <div className="container mx-auto">
-        <motion.div
-          className="bg-white text-gray-800 rounded-2xl shadow-lg p-6"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex items-center justify-between border-b pb-4 mb-4">
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <h1 className="text-xl font-semibold text-gray-800">Student Dashboard</h1>
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <Bell className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700" />
+                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-medium">
+                  {user.name.charAt(0)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-3xl font-extrabold">Welcome, {user.name}</h1>
-              <p className="text-sm text-gray-600">
-                Branch: <span className="font-semibold">{user.branch}</span> | Semester: <span className="font-semibold">{user.semester}</span>
+              <h2 className="text-2xl font-bold text-gray-800">Welcome back, {user.name}</h2>
+              <p className="text-gray-600 mt-1">
+                {user.branch} • Semester {user.semester}
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-600">Email: <span className="font-semibold">{user.email}</span></p>
+            <div className="mt-4 md:mt-0 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search subjects..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              />
             </div>
           </div>
+        </div>
 
-          <div className="mt-8">
-            <h2 className="text-xl font-semibold">Your Subjects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {subjects.map((subject, index) => (
-                <div
-                  key={index}
-                  className="p-4 bg-indigo-500 text-white rounded-xl shadow-lg hover:bg-indigo-700 cursor-pointer transition transform hover:scale-105"
-                  onClick={() => handleSubjectClick(subject)}
-                >
-                  <p className="text-lg font-medium text-center">{subject}</p>
-                </div>
-              ))}
-            </div>
+        {filteredSubjects.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500">No subjects found matching "{searchQuery}"</p>
           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {filteredSubjects.map((subject, index) => (
+              <div key={index} onClick={() => setSelectedSubject(subject.name)}>
+                <SubjectCard subject={subject} />
+              </div>
+            ))}
+          </div>
+        )}
 
+        <AnimatePresence mode="wait">
           {selectedSubject && (
             <motion.div
-              className="mt-8 bg-gray-100 text-gray-800 p-6 rounded-xl shadow-lg"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="bg-white rounded-xl shadow-sm p-6 mt-8"
             >
-              <h3 className="text-2xl font-bold border-b pb-2 mb-4">{selectedSubject}</h3>
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-6 bg-blue-500 text-white rounded-xl shadow-lg hover:bg-blue-700 cursor-pointer transition transform hover:scale-105">
-                  <Book className="mb-4 w-8 h-8 mx-auto" />
-                  <p className="text-center text-lg font-semibold">Resources</p>
-                </div>
-                <div className="p-6 bg-green-500 text-white rounded-xl shadow-lg hover:bg-green-700 cursor-pointer transition transform hover:scale-105">
-                  <ClipboardList className="mb-4 w-8 h-8 mx-auto" />
-                  <p className="text-center text-lg font-semibold">Quiz</p>
-                </div>
-                <div className="p-6 bg-red-500 text-white rounded-xl shadow-lg hover:bg-red-700 cursor-pointer transition transform hover:scale-105">
-                  <FileText className="mb-4 w-8 h-8 mx-auto" />
-                  <p className="text-center text-lg font-semibold">Exam</p>
-                </div>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-gray-800">{selectedSubject}</h3>
+                <button
+                  onClick={() => setSelectedSubject(null)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <ActionCard
+                  icon={Book}
+                  title="Learning Resources"
+                  color="from-blue-500 to-blue-600"
+                />
+                <ActionCard
+                  icon={ClipboardList}
+                  title="Practice Quiz"
+                  color="from-emerald-500 to-emerald-600"
+                />
+                <ActionCard
+                  icon={FileText}
+                  title="Assignments"
+                  color="from-purple-500 to-purple-600"
+                />
               </div>
             </motion.div>
           )}
-        </motion.div>
-      </div>
+        </AnimatePresence>
+      </main>
     </div>
   );
 };
