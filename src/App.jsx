@@ -1,28 +1,19 @@
-import './App.css';
-import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginSignup from './pages/LoginSignup';
-import Dashboard from './pages/Dashboard';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import OtpVerification from './pages/OtpVerification';
+import Dashboard from './pages/Dashboard'
+import './App.css';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication status
-  const [user, setUser] = useState(null); // Track the logged-in user details
-
-  // Mock login function
-  const handleLogin = (email, password) => {
-    if (email === 'satvik.raina@college.edu' && password === 'password123') {
-      setIsAuthenticated(true);
-      setUser({ name: 'Satvik Raina', email: 'satvik.raina@college.edu', branch: 'CSE', semester: '4th' });
-      return true;
-    }
-    return false;
-  };
-
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginSignup onLogin={handleLogin} />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Signup" element={<Signup />} />
+        <Route path="/OtpVerification" element={<OtpVerification />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="*" element={<Navigate to="/Login" />} />
       </Routes>
     </Router>
   );
