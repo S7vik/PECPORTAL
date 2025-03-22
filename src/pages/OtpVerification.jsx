@@ -15,13 +15,13 @@ const OtpVerification = () => {
 
   useEffect(() => {
     // Get email from session storage
-    // const verificationEmail = sessionStorage.getItem('verificationEmail');
-    // if (!verificationEmail) {
-    //   // If no email in session storage, redirect to signup
-    //   navigate('/signup');
-    //   return;
-    // }
-    // setEmail(verificationEmail);
+    const verificationEmail = sessionStorage.getItem('verificationEmail');
+    if (!verificationEmail) {
+      // If no email in session storage, redirect to signup
+      navigate('/signup');
+      return;
+    }
+    setEmail(verificationEmail);
 
     // Start countdown timer
     const interval = setInterval(() => {

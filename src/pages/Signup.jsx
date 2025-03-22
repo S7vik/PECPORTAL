@@ -31,7 +31,7 @@ const Signup = () => {
       if (response.data.success) {
         // Store email in session storage to pass to OTP verification page
         sessionStorage.setItem('verificationEmail', email);
-        navigate('/verify-otp');
+        navigate('/OtpVerification');
       } else {
         setError(response.data.message || 'Signup failed');
       }
