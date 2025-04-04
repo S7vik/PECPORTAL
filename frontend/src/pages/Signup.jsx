@@ -1,85 +1,88 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, Info } from 'lucide-react';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import api from '../api/axios';
+import { useAuth } from '../components/AuthContext';
 
 const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [infoMessage, setInfoMessage] = useState('');
+
   const navigate = useNavigate();
+  const { signup } = useAuth();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+    setInfoMessage('');
 
     if (!name || !email || !password) {
       setError('Please fill in all fields');
-      setLoading(false);
       return;
     }
 
-    // Store the email in sessionStorage right away (before API call)
-    // This ensures it's available even if the response handling has issues
-    sessionStorage.setItem('verificationEmail', email);
+    // Basic email validation
+    const adminEmail = "ajinkyashivpure@gmail.com";
+    if (email !== adminEmail && !email.endsWith('@pec.edu.in')) {
+      setError('Please use a valid PEC email address (@pec.edu.in) or the admin email');
+      return;
+    }
+
+    setLoading(true);
 
     try {
-      console.log("Sending signup request with data:", { name, email, password });
+      // Save email for OTP verification
+      sessionStorage.setItem('verificationEmail', email);
 
-      const response = await api.post('/api/user/signup', {
-        name,
-        email,
-        password
-      });
+      await signup(name, email, password);
 
-      console.log("Signup response received:", response);
+      setInfoMessage('Signup successful! Please check your email for OTP verification.');
 
-      // Navigate regardless of specific success format
-      // If we got a 200 response, assume signup was successful
-      navigate('/OtpVerification');
-
+      // Redirect to OTP verification page after a short delay
+      setTimeout(() => {
+        navigate('/otp-verification');
+      }, 1500);
     } catch (err) {
-      console.error("Signup error:", err);
-
-      // Check if we received a success status but with error in data
-      // Some APIs return 200 even for business logic errors
-      if (err.response && err.response.status === 200) {
-        console.log("Got 200 status but with error, navigating anyway");
-        navigate('/OtpVerification');
-        return;
-      }
-
-      if (err.response) {
-        setError(err.response.data.message || 'Error creating account. Please try again.');
-      } else if (err.request) {
-        setError('No response from server. Please try again later.');
-
-        // If we're getting no response, it could be a CORS issue
-        console.error("No response received - possible CORS issue");
-      } else {
-        setError('Error during signup. Please try again.');
-      }
+      console.error('Signup error:', err);
+      setError(
+          err.response?.data ||
+          'Error creating account. Please try again.'
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-700 ">
+      <div className="min-h-screen flex items-center justify-center bg-gray-700">
         <div className="bg-white px-8 py-10 rounded-xl shadow-sm border border-gray-100 w-full max-w-md">
           <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
             Create Account
           </h2>
           <p className="text-sm text-gray-600 mt-2">
-            Sign up with your email to get started
+            Sign up with your PEC email to get started
           </p>
 
           <form className="mt-8 space-y-5" onSubmit={handleSignup}>
+            {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center text-sm">
+                  <AlertCircle className="w-5 h-5 mr-2" />
+                  {error}
+                </div>
+            )}
+
+            {infoMessage && (
+                <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-md flex items-center text-sm">
+                  <Info className="w-5 h-5 mr-2" />
+                  {infoMessage}
+                </div>
+            )}
+
             <div className="space-y-1">
               <Input
                   type="text"
@@ -94,7 +97,7 @@ const Signup = () => {
             <div className="space-y-1">
               <Input
                   type="email"
-                  placeholder="Email"
+                  placeholder="Email (@pec.edu.in)"
                   icon={<Mail className="text-gray-400 w-5 h-5" />}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -112,10 +115,6 @@ const Signup = () => {
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
               />
             </div>
-
-            {error && (
-                <p className="text-red-500 text-sm font-medium">{error}</p>
-            )}
 
             <Button
                 type="submit"

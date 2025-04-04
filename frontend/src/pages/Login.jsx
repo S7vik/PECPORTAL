@@ -1,86 +1,41 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock } from 'lucide-react';
+import { Mail, Lock, AlertCircle } from 'lucide-react';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import { useAuth } from '../components/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
     if (!email || !password) {
       setError('Please fill in all fields');
-      setLoading(false);
       return;
     }
 
+    setLoading(true);
+
     try {
-      console.log("Attempting login with:", { email, password: "****" });
-
-      // Create the login request using fetch instead of axios
-      const response = await fetch('http://localhost:8080/api/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          email,
-          password
-        })
-      });
-
-      console.log("Login response status:", response.status);
-
-      // Check if response is ok (status in the range 200-299)
-      if (!response.ok) {
-        throw new Error(`Server responded with status ${response.status}`);
-      }
-
-      // Try to parse the response as text first
-      const responseText = await response.text();
-      console.log("Response text:", responseText);
-
-      let responseData;
-      // Try to parse as JSON if possible
-      try {
-        responseData = JSON.parse(responseText);
-        console.log("Parsed response data:", responseData);
-      } catch (e) {
-        console.log("Response is not valid JSON, using text response");
-        responseData = { token: responseText }; // Treat the response as the token itself
-      }
-
-      if (responseData.token) {
-        // Store user token
-        localStorage.setItem('token', responseData.token);
-        console.log("Token stored in localStorage");
-
-        // Redirect to dashboard
-        navigate('/Dashboard');
-      } else {
-        // If no token in response
-        setError('Login successful but no token received');
-      }
-    }
-    catch (err) {
-      console.error("Login error:", err);
-
-      if (err.name === 'SyntaxError') {
-        setError('Error parsing server response');
-      } else {
-        setError('Invalid credentials or server error. Please try again.');
-      }
-    }
-    finally {
+      await login(email, password);
+      // On successful login, user will be redirected to dashboard
+      // through the route protection in App.jsx
+    } catch (err) {
+      console.error('Login error:', err);
+      setError(
+          err.response?.data ||
+          'Invalid credentials or server error. Please try again.'
+      );
+    } finally {
       setLoading(false);
     }
   };
@@ -92,10 +47,17 @@ const Login = () => {
             Welcome Back
           </h2>
           <p className="text-sm text-gray-600 mt-2">
-            Login with your details
+            Login with your PEC credentials
           </p>
 
           <form className="mt-8 space-y-5" onSubmit={handleLogin}>
+            {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center text-sm">
+                  <AlertCircle className="w-5 h-5 mr-2" />
+                  {error}
+                </div>
+            )}
+
             <div className="space-y-1">
               <Input
                   type="email"
@@ -117,10 +79,6 @@ const Login = () => {
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
               />
             </div>
-
-            {error && (
-                <p className="text-red-500 text-sm font-medium">{error}</p>
-            )}
 
             <Button
                 type="submit"
