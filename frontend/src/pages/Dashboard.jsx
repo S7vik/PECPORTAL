@@ -40,10 +40,10 @@ const Dashboard = () => {
     const fetchUserData = async () => {
       const token = localStorage.getItem('token');
 
-      if (!token) {
-        navigate('/Login');
-        return;
-      }
+      // if (!token) {
+      //   navigate('/Login');
+      //   return;
+      // }
 
       try {
         const response = await api.get('/api/user/profile');
