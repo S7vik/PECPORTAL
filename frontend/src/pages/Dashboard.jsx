@@ -1,43 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Book, ClipboardList, FileText, Bell, Search, ChevronRight, LogOut } from 'lucide-react';
+import {Bell, Search, LogOut, List } from 'lucide-react';
 import api from '../api/axios';
+import Sidebar from '../pages/Sidebar';
+import CourseCard from '../pages/CourseCard';
+import StudyMaterialsList from '../pages/StudyMaterialsList';
+import AdminUserManagement from "./AdminUserManagement.jsx";
+import AdminCourseManagement  from "./AdminCourseManagement.jsx";
+import AdminMaterialManagement from "./AdminMaterialManagement.jsx";
 
 const Dashboard = () => {
-  const [selectedSubject, setSelectedSubject] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [userData, setUserData] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState('courses');
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Sample subjects data - in production, this would come from your backend
-  const subjects = [
-    {
-      name: 'Data Structures',
-      progress: 75,
-      color: 'from-blue-500 to-blue-600'
-    },
-    {
-      name: 'Operating Systems',
-      progress: 60,
-      color: 'from-purple-500 to-purple-600'
-    },
-    {
-      name: 'Database Management',
-      progress: 85,
-      color: 'from-emerald-500 to-emerald-600'
-    },
-    {
-      name: 'Computer Networks',
-      progress: 45,
-      color: 'from-orange-500 to-orange-600'
-    },
-  ];
-
-  // Fetch user data on component mount
+  // Fetch user data and courses on component mount
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchDashboardData = async () => {
       const token = localStorage.getItem('token');
 
       if (!token) {
@@ -46,17 +32,34 @@ const Dashboard = () => {
       }
 
       try {
-        const response = await api.get('/api/user/profile');
-        if (response.data && response.data.success) {
-          setUserData(response.data.user);
-        } else {
-          // Handle error - token might be invalid
-          localStorage.removeItem('token');
-          navigate('/Login');
+        // First, get dashboard data which includes user info
+        const dashboardResponse = await api.get('/api/dashboard');
+
+        // Store the response data directly (this is important!)
+        console.log("Dashboard response:", dashboardResponse.data);
+        setUserData(dashboardResponse.data);
+
+        // If you're getting the user name as null, you might also want to store it in localStorage
+        if (dashboardResponse.data && dashboardResponse.data.name) {
+          localStorage.setItem('user', JSON.stringify(dashboardResponse.data));
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        if (error.response && error.response.status === 401) {
+
+        // If it's a student, fetch their current courses
+        if (dashboardResponse.data.dashboardType === 'student') {
+          const coursesResponse = await api.get('/api/courses/current');
+          console.log("Courses response:", coursesResponse.data);
+          setCourses(coursesResponse.data.courses || []);
+        }
+        // If it's an admin, fetch all courses
+        else if (dashboardResponse.data.dashboardType === 'admin') {
+          const coursesResponse = await api.get('/api/courses/admin/all');
+          setCourses(coursesResponse.data || []);
+        }
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data');
+
+        if (err.response && err.response.status === 401) {
           // Unauthorized - token expired or invalid
           localStorage.removeItem('token');
           navigate('/Login');
@@ -66,52 +69,29 @@ const Dashboard = () => {
       }
     };
 
-    fetchUserData();
+    fetchDashboardData();
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     navigate('/Login');
   };
 
-  const filteredSubjects = subjects.filter(subject =>
-      subject.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const fetchMaterialsForCourse = async (courseId) => {
+    try {
+      const response = await api.get(`/api/materials/course/${courseId}`);
+      setMaterials(response.data);
+      setSelectedCourse(courses.find(course => course.id === courseId));
+      setActiveTab('materials');
+    } catch (err) {
+      console.error('Error fetching materials:', err);
+      setError('Failed to load course materials');
+    }
+  };
 
-  const SubjectCard = ({ subject }) => (
-      <motion.div
-          whileHover={{ y: -4 }}
-          className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
-      >
-        <div className={`h-2 rounded-t-xl bg-gradient-to-r ${subject.color}`} />
-        <div className="p-4">
-          <h3 className="font-semibold text-gray-800">{subject.name}</h3>
-          <div className="mt-3">
-            <div className="flex justify-between mb-1">
-              <span className="text-xs text-gray-500">Progress</span>
-              <span className="text-xs font-medium text-gray-700">{subject.progress}%</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
-              <div
-                  className={`h-1.5 rounded-full bg-gradient-to-r ${subject.color}`}
-                  style={{ width: `${subject.progress}%` }}
-              />
-            </div>
-          </div>
-        </div>
-      </motion.div>
-  );
-
-  const ActionCard = ({ icon: Icon, title, color }) => (
-      <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className={`p-4 rounded-xl bg-gradient-to-r ${color} text-white cursor-pointer`}
-      >
-        <Icon className="w-6 h-6 mb-2" />
-        <h3 className="font-medium">{title}</h3>
-      </motion.div>
+  const filteredCourses = courses.filter(course =>
+      course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.courseCode.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) {
@@ -122,111 +102,191 @@ const Dashboard = () => {
     );
   }
 
-  return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="bg-white shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <h1 className="text-xl font-semibold text-gray-800">Student Dashboard</h1>
-              <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <Bell className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700" />
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-medium">
-                    {userData?.name ? userData.name.charAt(0) : 'U'}
-                  </div>
-                  <button
-                      onClick={handleLogout}
-                      className="text-gray-600 hover:text-gray-800"
-                      title="Logout"
-                  >
-                    <LogOut className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+  if (error) {
+    return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+          <p className="text-red-500 mb-4">{error}</p>
+          <button
+              onClick={() => navigate('/Login')}
+              className="px-4 py-2 bg-gray-800 text-white rounded-md"
+          >
+            Back to Login
+          </button>
         </div>
+    );
+  }
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="mb-8">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-800">Welcome back, {userData?.name || 'Student'}</h2>
-                <p className="text-gray-600 mt-1">
-                  {userData?.branch || 'CSE'} • Semester {userData?.semester || '4th'}
-                </p>
-              </div>
-              <div className="mt-4 md:mt-0 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                    type="text"
-                    placeholder="Search subjects..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-          </div>
+  const isAdmin = userData?.dashboardType === 'admin';
 
-          {filteredSubjects.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-gray-500">No subjects found matching "{searchQuery}"</p>
-              </div>
-          ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {filteredSubjects.map((subject, index) => (
-                    <div key={index} onClick={() => setSelectedSubject(subject.name)}>
-                      <SubjectCard subject={subject} />
+  return (
+      <div className="min-h-screen bg-gray-50 flex">
+        {/* Mobile sidebar toggle */}
+        <button
+            className="md:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md"
+            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+        >
+          <List className="h-6 w-6 text-gray-700" />
+        </button>
+
+        {/* Sidebar */}
+        <Sidebar
+            isAdmin={isAdmin}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            isOpen={isMobileSidebarOpen}
+            setIsOpen={setIsMobileSidebarOpen}
+            userData={userData}
+        />
+
+        {/* Main content */}
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <header className="bg-white shadow-sm z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center h-16">
+                <h1 className="text-xl font-semibold text-gray-800">
+                  {isAdmin ? 'Admin Dashboard' : 'Student Dashboard'}
+                </h1>
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <Bell className="w-5 h-5 text-gray-500 cursor-pointer hover:text-gray-700" />
+                    <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-medium">
+                      {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
                     </div>
-                ))}
-              </div>
-          )}
-
-          <AnimatePresence mode="wait">
-            {selectedSubject && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    className="bg-white rounded-xl shadow-sm p-6 mt-8"
-                >
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-gray-800">{selectedSubject}</h3>
                     <button
-                        onClick={() => setSelectedSubject(null)}
-                        className="text-gray-400 hover:text-gray-600"
+                        onClick={handleLogout}
+                        className="text-gray-600 hover:text-gray-800"
+                        title="Logout"
                     >
-                      <ChevronRight className="w-5 h-5" />
+                      <LogOut className="w-5 h-5" />
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+          </header>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <ActionCard
-                        icon={Book}
-                        title="Learning Resources"
-                        color="from-blue-500 to-blue-600"
-                    />
-                    <ActionCard
-                        icon={ClipboardList}
-                        title="Practice Quiz"
-                        color="from-emerald-500 to-emerald-600"
-                    />
-                    <ActionCard
-                        icon={FileText}
-                        title="Assignments"
-                        color="from-purple-500 to-purple-600"
-                    />
-                  </div>
-                </motion.div>
+          {/* Main content area */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* Welcome section */}
+            <div className="mb-8">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Welcome back, {userData && userData.name ? userData.name : 'User'}
+                  </h2>
+                  {!isAdmin && userData && (
+                      <p className="text-gray-600 mt-1">
+                        {userData.department ? userData.department.toUpperCase() : 'Department'} •
+                        Semester {userData.currentSemester || '-'} •
+                        Batch {userData.batchYear || '-'}
+                      </p>
+                  )}
+                </div>
+                <div className="mt-4 md:mt-0 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                      type="text"
+                      placeholder="Search courses..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Content based on active tab */}
+            {activeTab === 'courses' && (
+                <>
+                  {filteredCourses.length === 0 ? (
+                      <div className="text-center py-8">
+                        <p className="text-gray-500">
+                          {searchQuery
+                              ? `No courses found matching "${searchQuery}"`
+                              : "No courses available for this semester"
+                          }
+                        </p>
+                      </div>
+                  ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        {filteredCourses.map((course) => (
+                            <CourseCard
+                                key={course.id}
+                                course={course}
+                                onClick={() => fetchMaterialsForCourse(course.id)}
+                            />
+                        ))}
+                      </div>
+                  )}
+                </>
             )}
-          </AnimatePresence>
-        </main>
+
+            {activeTab === 'materials' && selectedCourse && (
+                <StudyMaterialsList
+                    materials={materials}
+                    course={selectedCourse}
+                    onBackClick={() => setActiveTab('courses')}
+                />
+            )}
+
+            {activeTab === 'settings' && (
+                <div className="bg-white rounded-xl shadow-sm p-6">
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Account Settings</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-sm text-gray-500">Name</p>
+                      <p className="font-medium">{userData?.name || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Email</p>
+                      <p className="font-medium">{userData?.email || 'N/A'}</p>
+                    </div>
+                    {!isAdmin && (
+                        <>
+                          <div>
+                            <p className="text-sm text-gray-500">Department</p>
+                            <p className="font-medium">{userData?.department?.toUpperCase() || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500">Batch Year</p>
+                            <p className="font-medium">{userData?.batchYear || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500">Current Semester</p>
+                            <p className="font-medium">{userData?.currentSemester || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500">Semester Date Range</p>
+                            <p className="font-medium">{userData?.semesterDateRange || 'N/A'}</p>
+                          </div>
+                        </>
+                    )}
+                  </div>
+                </div>
+            )}
+
+            {/* Admin-specific tabs */}
+            {isAdmin && activeTab === 'manageCourses' && (
+                <AdminCourseManagement courses={courses} setCourses={setCourses} />
+            )}
+
+            {isAdmin && activeTab === 'manageMaterials' && (
+                <AdminMaterialManagement courses={courses} />
+            )}
+
+            {isAdmin && activeTab === 'manageUsers' && (
+                <AdminUserManagement />
+            )}
+          </main>
+        </div>
       </div>
   );
 };
+
+
 
 export default Dashboard;
