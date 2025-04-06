@@ -4,7 +4,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import OtpVerification from './pages/OtpVerification';
 import Dashboard from './pages/Dashboard';
-import { AuthProvider, useAuth } from './components/AuthContext';
+import {AuthProvider, useAuth} from "./components/AuthContext.jsx";
 import './App.css';
 
 // Protected route component
