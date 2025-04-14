@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {Bell, Search, LogOut, List } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Bell, Search, LogOut, List } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Changed from useRouter
 import api from '../api/axios';
 import Sidebar from '../pages/Sidebar';
 import CourseCard from '../pages/CourseCard';
 import StudyMaterialsList from '../pages/StudyMaterialsList';
 import AdminUserManagement from "./AdminUserManagement.jsx";
-import AdminCourseManagement  from "./AdminCourseManagement.jsx";
+import AdminCourseManagement from "./AdminCourseManagement.jsx";
 import AdminMaterialManagement from "./AdminMaterialManagement.jsx";
 
 const Dashboard = () => {
@@ -19,38 +19,33 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('courses');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
+  const logoutInProgress = useRef(false);
+  
 
   // Fetch user data and courses on component mount
   useEffect(() => {
     const fetchDashboardData = async () => {
       const token = localStorage.getItem('token');
 
-      // if (!token) {
-      //   navigate('/Login');
-      //   return;
-      // }
+      if (!token) {
+        navigate('/login', { replace: true });
+        return;
+      }
 
       try {
         // First, get dashboard data which includes user info
         const dashboardResponse = await api.get('/api/dashboard');
-
-        // Store the response data directly (this is important!)
         console.log("Dashboard response:", dashboardResponse.data);
-        setUserData(dashboardResponse.data);
-
-        // If you're getting the user name as null, you might also want to store it in localStorage
+        setUserData(dashboardResponse.data);        
         if (dashboardResponse.data && dashboardResponse.data.name) {
           localStorage.setItem('user', JSON.stringify(dashboardResponse.data));
         }
-
-        // If it's a student, fetch their current courses
         if (dashboardResponse.data.dashboardType === 'student') {
           const coursesResponse = await api.get('/api/courses/current');
           console.log("Courses response:", coursesResponse.data);
           setCourses(coursesResponse.data.courses || []);
         }
-        // If it's an admin, fetch all courses
         else if (dashboardResponse.data.dashboardType === 'admin') {
           const coursesResponse = await api.get('/api/courses/admin/all');
           setCourses(coursesResponse.data || []);
@@ -62,7 +57,7 @@ const Dashboard = () => {
         if (err.response && err.response.status === 401) {
           // Unauthorized - token expired or invalid
           localStorage.removeItem('token');
-          navigate('/Login');
+          navigate('/login', { replace: true });
         }
       } finally {
         setLoading(false);
@@ -70,12 +65,20 @@ const Dashboard = () => {
     };
 
     fetchDashboardData();
-  }, [navigate]);
+  }, [navigate]); 
 
-  const handleLogout = () => {
+  // Separate logout function with browser compatibility improvements
+  const handleLogout = useCallback(() => {
+    // Prevent multiple logout attempts
+    if (logoutInProgress.current) return;
+    
+    logoutInProgress.current = true;
     localStorage.removeItem('token');
-    navigate('/Login');
-  };
+    
+    // Force a browser redirect instead of using React Router
+    // This is more reliable across browsers
+    window.location.href = '/login';
+  }, []);
 
   const fetchMaterialsForCourse = async (courseId) => {
     try {
@@ -103,11 +106,12 @@ const Dashboard = () => {
   }
 
   if (error) {
+    localStorage.removeItem('token');
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
           <p className="text-red-500 mb-4">{error}</p>
           <button
-              onClick={() => navigate('/Login')}
+              onClick={() => navigate('/login', { replace: true })}
               className="px-4 py-2 bg-gray-800 text-white rounded-md"
           >
             Back to Login
@@ -286,7 +290,5 @@ const Dashboard = () => {
       </div>
   );
 };
-
-
 
 export default Dashboard;

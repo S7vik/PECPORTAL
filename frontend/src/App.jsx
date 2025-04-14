@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
+import PECPortalLandingPage from './pages/LandingPage.jsx';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import OtpVerification from './pages/OtpVerification';
 import Dashboard from './pages/Dashboard';
-import { AuthProvider, useAuth } from './components/AuthContext';
+import {AuthProvider, useAuth} from "./components/AuthContext.jsx";
 import './App.css';
 
 // Protected route component
@@ -39,6 +39,9 @@ function AppRoutes() {
 
     return (
         <Routes>
+            {/* Landing page as the root route */}
+            <Route path="/" element={<PECPortalLandingPage />} />
+            
             {/* Public routes */}
             <Route
                 path="/login"
@@ -63,8 +66,8 @@ function AppRoutes() {
                 }
             />
 
-            {/* Fallback route */}
-            <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
+            {/* Fallback route - redirect to landing page if path doesn't match */}
+            <Route path="*" element={<Navigate to="/" />} />
         </Routes>
     );
 }
