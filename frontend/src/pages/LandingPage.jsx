@@ -2,6 +2,7 @@ import React , { useState } from 'react';
 import { BookOpen, FileText, CheckSquare, User, Zap, Calendar, Bell, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; 
 
+
 const PECPortalLandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate(); 
@@ -19,7 +20,6 @@ const PECPortalLandingPage = () => {
               </div>
               <div className="hidden md:ml-6 md:flex md:space-x-6">
                 <a href="#features" className="px-3 py-2 text-sm font-medium hover:bg-blue-600 rounded-md">Features</a>
-                <a href="#courses" className="px-3 py-2 text-sm font-medium hover:bg-blue-600 rounded-md">Courses</a>
                 <a href="#resources" className="px-3 py-2 text-sm font-medium hover:bg-blue-600 rounded-md">Resources</a>
                 <a href="#faq" className="px-3 py-2 text-sm font-medium hover:bg-blue-600 rounded-md">FAQ</a>
               </div>
@@ -80,9 +80,9 @@ const PECPortalLandingPage = () => {
                 </button>
               </div>
             </div>
-            <div className="mt-10 lg:mt-0 lg:w-1/2 flex justify-center">
+            <div className="mt-10 lg:mt-0 lg:w-1/2 flex justify-center  ">
               <img 
-                src="/api/placeholder/600/400" 
+                src="https://img.collegepravesh.com/2015/11/PEC-Logo.png" 
                 alt="Student dashboard preview" 
                 className="rounded-lg shadow-xl" 
               />
@@ -110,7 +110,7 @@ const PECPortalLandingPage = () => {
                 <h3 className="text-xl font-semibold text-gray-900">Course Access</h3>
               </div>
               <p className="text-gray-600">
-                Easily access all your enrolled courses, syllabi, and course materials in one organized dashboard.
+                Easily access all your enrolled courses, syllabus, and course materials in one organized dashboard.
               </p>
             </div>
 
@@ -133,78 +133,11 @@ const PECPortalLandingPage = () => {
                 Test your knowledge with interactive practice quizzes designed to reinforce your understanding.
               </p>
             </div>
-
-            <div className="p-6 bg-gray-50 rounded-lg shadow-md">
-              <div className="flex items-center mb-4">
-                <Calendar className="h-8 w-8 text-blue-600 mr-3" />
-                <h3 className="text-xl font-semibold text-gray-900">Schedule Management</h3>
-              </div>
-              <p className="text-gray-600">
-                Keep track of assignments, due dates, and important events with our integrated calendar.
-              </p>
-            </div>
-
-            <div className="p-6 bg-gray-50 rounded-lg shadow-md">
-              <div className="flex items-center mb-4">
-                <User className="h-8 w-8 text-blue-600 mr-3" />
-                <h3 className="text-xl font-semibold text-gray-900">Personalized Dashboard</h3>
-              </div>
-              <p className="text-gray-600">
-                A customizable dashboard that highlights what matters most to you and your academic goals.
-              </p>
-            </div>
-
-            <div className="p-6 bg-gray-50 rounded-lg shadow-md">
-              <div className="flex items-center mb-4">
-                <Bell className="h-8 w-8 text-blue-600 mr-3" />
-                <h3 className="text-xl font-semibold text-gray-900">Notifications</h3>
-              </div>
-              <p className="text-gray-600">
-                Stay informed with timely notifications about course updates, new materials, and upcoming deadlines.
-              </p>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Courses Preview Section */}
-      <div id="courses" className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-              Your Courses at a Glance
-            </h2>
-            <p className="mt-4 text-lg text-gray-600">
-              Access your current courses and resources with just a few clicks.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { title: "Computer Science 101", desc: "Introduction to programming fundamentals", progress: 75 },
-              { title: "Data Structures", desc: "Advanced algorithms and data organization", progress: 60 },
-              { title: "Web Development", desc: "Frontend and backend technologies", progress: 40 },
-              { title: "Database Management", desc: "SQL and database design principles", progress: 85 },
-              { title: "Software Engineering", desc: "Project management and development lifecycle", progress: 30 },
-              { title: "Machine Learning", desc: "AI algorithms and applications", progress: 15 }
-            ].map((course, idx) => (
-              <div key={idx} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <div className="h-3 bg-blue-600" style={{ width: `${course.progress}%` }}></div>
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{course.title}</h3>
-                  <p className="text-gray-600 mb-4">{course.desc}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500">{course.progress}% Complete</span>
-                    <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                      Continue →
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+        
 
       {/* Resources Section */}
       <div id="resources" className="py-16 bg-white">
@@ -366,7 +299,7 @@ const PECPortalLandingPage = () => {
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="hover:text-white">Home</a></li>
                 <li><a href="#features" className="hover:text-white">Features</a></li>
-                <li><a href="#courses" className="hover:text-white">Courses</a></li>
+                
                 <li><a href="#resources" className="hover:text-white">Resources</a></li>
               </ul>
             </div>

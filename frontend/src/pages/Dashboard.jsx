@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Bell, Search, LogOut, List } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // Changed from useRouter
+import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import Sidebar from '../pages/Sidebar';
 import CourseCard from '../pages/CourseCard';
@@ -21,14 +21,22 @@ const Dashboard = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const navigate = useNavigate(); 
   const logoutInProgress = useRef(false);
+  const tokenRemoved = useRef(false);
   
-
   // Fetch user data and courses on component mount
   useEffect(() => {
     const fetchDashboardData = async () => {
+      // If token was already checked and removed, don't try to fetch again
+      if (tokenRemoved.current) {
+        setLoading(false);
+        return;
+      }
+
       const token = localStorage.getItem('token');
 
       if (!token) {
+        tokenRemoved.current = true;
+        setLoading(false);
         navigate('/login', { replace: true });
         return;
       }
@@ -56,6 +64,7 @@ const Dashboard = () => {
 
         if (err.response && err.response.status === 401) {
           // Unauthorized - token expired or invalid
+          tokenRemoved.current = true;
           localStorage.removeItem('token');
           navigate('/login', { replace: true });
         }
@@ -73,10 +82,22 @@ const Dashboard = () => {
     if (logoutInProgress.current) return;
     
     logoutInProgress.current = true;
+    tokenRemoved.current = true;
     localStorage.removeItem('token');
     
     // Force a browser redirect instead of using React Router
-    // This is more reliable across browsers
+    window.location.href = '/login';
+  }, []);
+
+  // Direct navigation without React Router
+  const handleBackToLogin = useCallback(() => {
+    if (logoutInProgress.current) return;
+    
+    logoutInProgress.current = true;
+    tokenRemoved.current = true;
+    localStorage.removeItem('token');
+    
+    // Use direct browser navigation instead of React Router
     window.location.href = '/login';
   }, []);
 
@@ -105,13 +126,13 @@ const Dashboard = () => {
     );
   }
 
+  // Error state component
   if (error) {
-    localStorage.removeItem('token');
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
           <p className="text-red-500 mb-4">{error}</p>
           <button
-              onClick={() => navigate('/login', { replace: true })}
+              onClick={handleBackToLogin}
               className="px-4 py-2 bg-gray-800 text-white rounded-md"
           >
             Back to Login
