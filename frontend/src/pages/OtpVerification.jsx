@@ -11,6 +11,8 @@ const OtpVerification = () => {
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(180); // 3 minutes
   const [isResendDisabled, setIsResendDisabled] = useState(true);
+  // Add new state for verification success animation
+  const [isVerified, setIsVerified] = useState(false);
 
   const inputsRef = useRef([]);
   const navigate = useNavigate();
@@ -52,12 +54,20 @@ const OtpVerification = () => {
     setLoading(true);
     try {
       await verifyOtp(email, fullOtp);
-      sessionStorage.removeItem('verificationEmail');
-      alert('Email verified successfully! Please log in.');
-      navigate('/login');
+      
+      // Set verified state to trigger animation
+      setIsVerified(true);
+      
+      // Short delay before redirect to show the animation
+      setTimeout(() => {
+        sessionStorage.removeItem('verificationEmail');
+        navigate('/login');
+      }, 1500);
+      
     } catch (err) {
       console.error("OTP verification error:", err);
       setError('Invalid or expired OTP. Please try again.');
+      setIsVerified(false);
     } finally {
       setLoading(false);
     }
@@ -104,8 +114,8 @@ const OtpVerification = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-700">
-      <div className="bg-white px-8 py-10 rounded-xl shadow-sm border border-gray-100 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0ea5e9]">
+      <div className="bg-white px-8 py-10 rounded-xl shadow-sm border border-blue-50 w-full max-w-md">
         <div className="flex items-center mb-6">
           <button
             onClick={() => navigate('/signup')}
@@ -133,16 +143,29 @@ const OtpVerification = () => {
 
           <div className="flex gap-2 justify-center">
             {otp.map((digit, index) => (
-              <input
-                key={index}
-                type="text"
-                maxLength="1"
-                value={digit}
-                onChange={(e) => handleChange(e.target, index)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
-                ref={(el) => (inputsRef.current[index] = el)}
-                className="w-12 h-12 text-center border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 text-lg"
-              />
+              <div key={index} className="relative">
+                <input
+                  type="text"
+                  maxLength="1"
+                  value={digit}
+                  onChange={(e) => handleChange(e.target, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  ref={(el) => (inputsRef.current[index] = el)}
+                  className={`w-12 h-12 text-center rounded-lg focus:outline-none focus:ring-2 text-lg transition-all duration-300 ${
+                    isVerified 
+                      ? 'border-green-500 bg-green-50 text-green-700 focus:ring-green-300' 
+                      : 'border border-gray-300 focus:ring-gray-300'
+                  }`}
+                  style={{
+                    borderWidth: isVerified ? '2px' : '1px'
+                  }}
+                />
+                {isVerified && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 animate-fadeIn">
+                    <CheckCircle className="w-6 h-6 text-green-500" />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
 
@@ -152,10 +175,14 @@ const OtpVerification = () => {
 
           <Button
             type="submit"
-            className="w-full py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200"
+            className={`w-full py-3 font-medium rounded-lg transition-colors duration-300 ${
+              isVerified 
+                ? 'bg-green-500 hover:bg-green-600 active:bg-green-700' 
+                : 'bg-blue-600 hover:bg-gray-800 active:bg-gray-950'
+            } text-white`}
             disabled={loading}
           >
-            {loading ? 'Verifying...' : 'Verify Email'}
+            {loading ? 'Verifying...' : isVerified ? 'Verified!' : 'Verify Email'}
           </Button>
 
           <div className="text-center">
@@ -173,5 +200,18 @@ const OtpVerification = () => {
     </div>
   );
 };
+
+// Add this animation to your global CSS or in a style tag
+const globalStyles = `
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out forwards;
+  animation-delay: 0.2s;
+}
+`;
 
 export default OtpVerification;

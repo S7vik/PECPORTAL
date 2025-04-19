@@ -63,7 +63,7 @@ const Login = () => {
           <Input
             type="email"
             placeholder="Email"
-            icon={<Mail className="text-blue-400 w-5 h-5" />}
+            icon={<Mail className="text-gray-400 w-5 h-5" />}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-3 rounded-lg border border-blue-200 focus:border-blue-300 focus:ring-2 focus:ring-blue-100 transition-all"
@@ -74,7 +74,7 @@ const Login = () => {
           <Input
             type="password"
             placeholder="Password"
-            icon={<Lock className="text-blue-400 w-5 h-5" />}
+            icon={<Lock className="text-gray-400 w-5 h-5" />}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-4 py-3 rounded-lg border border-blue-200 focus:border-blue-300 focus:ring-2 focus:ring-blue-100 transition-all"

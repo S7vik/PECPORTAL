@@ -59,12 +59,12 @@ const Signup = () => {
   };
 
   return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-700">
-        <div className="bg-white px-8 py-10 rounded-xl shadow-sm border border-gray-100 w-full max-w-md">
-          <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0ea5e9]">
+        <div className="bg-white px-8 py-10 rounded-xl shadow-sm border border-blue-50 w-full max-w-md">
+          <h2 className="text-2xl font-semibold text-black tracking-tight">
             Create Account
           </h2>
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-sm text-black mt-2">
             Sign up with your PEC email to get started
           </p>
 
@@ -118,7 +118,7 @@ const Signup = () => {
 
             <Button
                 type="submit"
-                className="w-full py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200"
+                className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200"
                 disabled={loading}
             >
               {loading ? 'Creating Account...' : 'Sign Up'}

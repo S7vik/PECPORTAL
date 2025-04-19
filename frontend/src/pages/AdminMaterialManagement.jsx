@@ -579,8 +579,8 @@ const AdminMaterialManagement = ({ courses = [] }) => {
                             <h3 className="text-lg font-medium">Are you sure?</h3>
                         </div>
                         <p className="mb-6 text-gray-600">
-                            Are you sure you want to delete the study material {'"${selectedMaterial.title}"?'} This action cannot be undone, and the file will be permanently deleted.
-                        </p>
+                            {`Are you sure you want to delete the study material "${selectedMaterial.title}"? This action cannot be undone, and the file will be permanently deleted.`}
+</p>
                         <div className="flex justify-end space-x-3">
                             <button
                                 onClick={() => setIsDeleteModalOpen(false)}

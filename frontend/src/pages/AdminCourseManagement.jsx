@@ -248,8 +248,8 @@ const AdminCourseManagement = () => {
                         <h3 className="text-lg font-medium">Are you sure?</h3>
                     </div>
                     <p className="mb-6 text-gray-600">
-                        Are you sure you want to delete the course {'"${selectedCourse?.courseName}" ({selectedCourse?.courseCode})'}? This action cannot be undone, and all associated materials will also be deleted.
-                    </p>
+  {`Are you sure you want to delete the course "${selectedCourse?.courseName}" (${selectedCourse?.courseCode})? This action cannot be undone, and all associated materials will also be deleted.`}
+</p>
                     <div className="flex justify-end space-x-3">
                         <button
                             onClick={() => setIsDeleteModalOpen(false)}
@@ -258,11 +258,17 @@ const AdminCourseManagement = () => {
                             Cancel
                         </button>
                         <button
-                            onClick={handleDeleteCourse}
-                            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none"
-                        >
-                            Delete
-                        </button>
+  onClick={() => {
+    if (selectedCourse?.id) {
+      handleDeleteCourse(selectedCourse.id);
+      setIsDeleteModalOpen(false);
+      setSelectedCourse(null);
+    }
+  }}
+  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none"
+>
+  Delete
+</button>
                     </div>
                 </div>
             </Modal>
