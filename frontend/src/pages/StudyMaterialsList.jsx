@@ -27,7 +27,7 @@ const StudyMaterialsList = ({ materials = [], course, onBackClick }) => {
 
     // Handle download
     const handleDownload = (material) => {
-        console.log('Download triggered for:', material);
+        
         if (!material || !material.filePath) {
             console.error('Invalid material or missing file path');
             return;
@@ -38,7 +38,7 @@ const StudyMaterialsList = ({ materials = [], course, onBackClick }) => {
         // Create the download link
         const backendUrl = 'https://pecportal.store'; // Change to your backend URL
         const downloadUrl = `${backendUrl}/api/materials/direct-download/${material.filePath}`;
-        console.log('Download URL:', downloadUrl);
+       
 
         // Direct approach - open in a new window/tab
         window.open(downloadUrl, '_blank');
