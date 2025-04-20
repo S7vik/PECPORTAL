@@ -38,6 +38,7 @@ const StudyMaterialsList = ({ materials = [], course, onBackClick }) => {
         // Create the download link
         const backendUrl = 'https://pecportal.store'; // Change to your backend URL
         const downloadUrl = `${backendUrl}/api/materials/direct-download/${material.filePath}`;
+        console.log('Download URL:', downloadUrl);
 
         // Direct approach - open in a new window/tab
         window.open(downloadUrl, '_blank');
