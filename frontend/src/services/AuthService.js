@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/user/';
+const API_URL = 'https://pecportal.onrender.com/api/user/';
 
 const AuthService = {
     login: async (email, password) => {
