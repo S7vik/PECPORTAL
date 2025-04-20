@@ -27,6 +27,7 @@ const StudyMaterialsList = ({ materials = [], course, onBackClick }) => {
 
     // Handle download
     const handleDownload = (material) => {
+        console.log('Download triggered for:', material);
         if (!material || !material.filePath) {
             console.error('Invalid material or missing file path');
             return;
