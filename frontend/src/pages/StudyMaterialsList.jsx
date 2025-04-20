@@ -35,7 +35,7 @@ const StudyMaterialsList = ({ materials = [], course, onBackClick }) => {
         setDownloading(material.id);
 
         // Create the download link
-        const backendUrl = 'https://pecportal.onrender.com'; // Change to your backend URL
+        const backendUrl = 'https://pecportal.store'; // Change to your backend URL
         const downloadUrl = `${backendUrl}/api/materials/direct-download/${material.filePath}`;
 
         // Direct approach - open in a new window/tab
@@ -53,7 +53,7 @@ const StudyMaterialsList = ({ materials = [], course, onBackClick }) => {
         }
 
         // Create the file URL for viewing
-        const backendUrl = 'https://pecportal.onrender.com'; // Change to your backend URL
+        const backendUrl = 'https://pecportal.store'; // Change to your backend URL
         const fileUrl = `${backendUrl}/api/materials/view/${material.id}`;
 
         // Set the viewing file

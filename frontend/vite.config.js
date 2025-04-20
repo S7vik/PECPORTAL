@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://pecportal.onrender.com',
+        target: 'https://pecportal.store',
         changeOrigin: true,
         secure: false
       }
