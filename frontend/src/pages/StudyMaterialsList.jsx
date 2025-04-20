@@ -27,20 +27,13 @@ const StudyMaterialsList = ({ materials = [], course, onBackClick }) => {
 
     // Handle download
     const handleDownload = (material) => {
-<<<<<<< HEAD
         if (!material || !material.fileUrl) {
             console.error('Invalid material or missing file URL');
-=======
-        
-        if (!material || !material.filePath) {
-            console.error('Invalid material or missing file path');
->>>>>>> ef03bf49b80f9867a153cafd7f98f47f5296c411
             return;
         }
 
         setDownloading(material.id);
 
-<<<<<<< HEAD
         // Extract the filename from the S3 URL
         // Example S3 URL: https://bucket-name.s3.region.amazonaws.com/filename.pdf
         const fileUrl = material.fileUrl;
@@ -49,12 +42,6 @@ const StudyMaterialsList = ({ materials = [], course, onBackClick }) => {
     
         const backendUrl = 'https://pecportal.store'; 
         const downloadUrl = `${backendUrl}/api/materials/direct-download/${filename}`;
-=======
-        // Create the download link
-        const backendUrl = 'https://pecportal.store'; // Change to your backend URL
-        const downloadUrl = `${backendUrl}/api/materials/direct-download/${material.filePath}`;
-       
->>>>>>> ef03bf49b80f9867a153cafd7f98f47f5296c411
 
         // Direct approach - open in a new window/tab
         window.open(downloadUrl, '_blank');
