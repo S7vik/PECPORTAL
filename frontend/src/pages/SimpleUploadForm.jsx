@@ -60,7 +60,7 @@ const SimpleUploadForm = ({ courseId, onSuccess, onCancel }) => {
 
             console.log("Making API request");
             // Use fetch instead of axios to rule out axios configuration issues
-            const response = await fetch(`http://localhost:8080/api/materials/admin/upload`, {
+            const response = await fetch(`https://pecportal.onrender.com/api/materials/admin/upload`, {
                 method: 'POST',
                 body: formData,
                 headers: {
