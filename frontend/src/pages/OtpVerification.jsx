@@ -128,7 +128,11 @@ const OtpVerification = () => {
               Verify Your Email
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              We've sent a verification code to <span className="font-medium">{email}</span>
+               We've sent a verification code to <span className="font-medium">{email}</span>. 
+            <br />
+            <span className="text-gray-500">
+              If you don't see it, please check your spam or promotions folder.
+            </span>
             </p>
           </div>
         </div>
