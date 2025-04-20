@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://43.204.149.202:8080',
+        target: 'https://pecportal.onrender.com',
         changeOrigin: true,
         secure: false
       }
