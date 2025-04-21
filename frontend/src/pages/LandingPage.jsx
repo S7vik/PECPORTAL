@@ -3,6 +3,7 @@ import { BookOpen, FileText, CheckSquare, User, Zap, Calendar, Bell, LogIn } fro
 import { useNavigate } from 'react-router-dom'; 
 
 
+
 const PECPortalLandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate(); 
@@ -82,7 +83,7 @@ const PECPortalLandingPage = () => {
             </div>
             <div className="mt-10 lg:mt-0 lg:w-1/2 flex justify-center  ">
               <img 
-                src="https://img.collegepravesh.com/2015/11/PEC-Logo.png" 
+                src="/peclogo.png" 
                 alt="Student dashboard preview" 
                 className="rounded-lg shadow-xl" 
               />
@@ -180,7 +181,7 @@ const PECPortalLandingPage = () => {
                   Supplementary articles and papers
                 </li>
               </ul>
-              <button className="mt-6 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+              <button className="mt-6 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700" onClick={() => navigate('/login')}>
                 Browse Materials
               </button>
             </div>
@@ -213,7 +214,7 @@ const PECPortalLandingPage = () => {
                   Self-assessment tools with instant feedback
                 </li>
               </ul>
-              <button className="mt-6 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+              <button className="mt-6 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700" onClick={() => navigate('/login')}>
                 Start Practicing
               </button>
             </div>
@@ -308,17 +309,17 @@ const PECPortalLandingPage = () => {
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="hover:text-white">Help Center</a></li>
                 <li><a href="#" className="hover:text-white">Contact IT</a></li>
-                <li><a href="#" className="hover:text-white">FAQ</a></li>
-                <li><a href="#" className="hover:text-white">System Status</a></li>
+                <li><a href="#faq" className="hover:text-white">FAQ</a></li>
+                
               </ul>
             </div>
             <div>
               <h3 className="text-white text-lg font-semibold mb-4">Connect</h3>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white">Faculty Directory</a></li>
-                <li><a href="#" className="hover:text-white">Student Services</a></li>
-                <li><a href="#" className="hover:text-white">Campus Map</a></li>
-                <li><a href="#" className="hover:text-white">Events</a></li>
+               
+                <li><a href="https://pec.ac.in/current-students" className="hover:text-white">Student Services</a></li>
+                <li><a href="https://pec.ac.in/campus" className="hover:text-white">Campus Map</a></li>
+                
               </ul>
             </div>
           </div>
