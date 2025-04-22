@@ -16,23 +16,27 @@ const Sidebar = ({
 
   return (
     <div
-      className={`${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      } transform  md:relative md:translate-x-0 top-0 left-0 min-h-full bg-gray-900 w-64 transition-transform duration-200 ease-in-out z-40 sticky`}
+      className={`fixed top-0 left-0 z-40 h-full bg-gray-900 w-64 transform transition-transform duration-200 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
+        md:relative md:translate-x-0 md:h-auto  md:top-0`}
     >
       <div className="flex flex-col min-h-full">
+        {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-800 sticky top-0 bg-gray-900 z-50">
           <h2 className="text-white text-xl font-bold">
             {isAdmin ? 'Admin Panel' : 'Student Portal'}
           </h2>
+          {/* Close button only on mobile */}
           <button
             className="md:hidden text-gray-400 hover:text-white"
             onClick={closeSidebar}
+            aria-label="Close sidebar"
           >
             <X className="h-6 w-6" />
           </button>
         </div>
-
+  
+        {/* User Info */}
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center">
             <div className="flex-shrink-0">
@@ -48,7 +52,8 @@ const Sidebar = ({
             </div>
           </div>
         </div>
-
+  
+        {/* Navigation */}
         <nav className="p-4 flex-1 overflow-y-auto">
           <p className="text-gray-400 text-xs uppercase tracking-wider mb-2">Navigation</p>
           <ul className="space-y-1">
@@ -99,7 +104,7 @@ const Sidebar = ({
               </button>
             </li>
           </ul>
-
+  
           {isAdmin && (
             <>
               <p className="text-gray-400 text-xs uppercase tracking-wider mt-6 mb-2">Administration</p>
@@ -174,7 +179,7 @@ const Sidebar = ({
         </nav>
       </div>
     </div>
-  );
+  );  
 };
 
 Sidebar.propTypes = {

@@ -39,28 +39,32 @@ const Modal = ({ isOpen, onClose, title, children }) => {
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-            onClick={handleBackdropClick}
-        >
-            <div
-                className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-xl"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="flex items-center justify-between p-4 border-b">
-                    <h3 className="text-lg font-medium">{title}</h3>
-                    <button
-                        onClick={onClose}
-                        className="p-1 rounded-full hover:bg-gray-100"
-                        aria-label="Close"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-                <div className="overflow-auto max-h-[calc(90vh-8rem)]">
-                    {children}
-                </div>
-            </div>
-        </div>
+  className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+  onClick={handleBackdropClick}
+>
+  <div
+    className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-xl flex flex-col"
+    onClick={(e) => e.stopPropagation()}
+  >
+    {/* Header */}
+    <div className="flex items-center justify-between p-4 border-b">
+      <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+      <button
+        onClick={onClose}
+        className="p-1 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        aria-label="Close"
+      >
+        <X className="w-5 h-5 text-gray-600" />
+      </button>
+    </div>
+
+    {/* Content */}
+    <div className="overflow-auto max-h-[calc(90vh-4rem)] p-4">
+      {children}
+    </div>
+  </div>
+</div>
+
     );
 };
 

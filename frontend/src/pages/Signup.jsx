@@ -59,86 +59,86 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0ea5e9]">
-        <div className="bg-white px-8 py-10 rounded-xl shadow-sm border border-blue-50 w-full max-w-md">
-          <h2 className="text-2xl font-semibold text-black tracking-tight">
-            Create Account
-          </h2>
-          <p className="text-sm text-black mt-2">
-            Sign up with your PEC email to get started
-          </p>
-
-          <form className="mt-8 space-y-5" onSubmit={handleSignup}>
-            {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center text-sm">
-                  <AlertCircle className="w-5 h-5 mr-2" />
-                  {error}
-                </div>
-            )}
-
-            {infoMessage && (
-                <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-md flex items-center text-sm">
-                  <Info className="w-5 h-5 mr-2" />
-                  {infoMessage}
-                </div>
-            )}
-
-            <div className="space-y-1">
-              <Input
-                  type="text"
-                  placeholder="Full Name"
-                  icon={<User className="text-gray-400 w-5 h-5" />}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
-              />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0ea5e9] px-2">
+      <div className="bg-white px-4 py-8 sm:px-8 sm:py-10 rounded-xl shadow-sm border border-blue-50 w-full max-w-xs sm:max-w-md">
+        <h2 className="text-2xl font-semibold text-black tracking-tight">
+          Create Account
+        </h2>
+        <p className="text-sm text-black mt-2">
+          Sign up with your PEC email to get started
+        </p>
+  
+        <form className="mt-8 space-y-5" onSubmit={handleSignup}>
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center text-sm">
+              <AlertCircle className="w-5 h-5 mr-2" />
+              {error}
             </div>
-
-            <div className="space-y-1">
-              <Input
-                  type="email"
-                  placeholder="Email (@pec.edu.in)"
-                  icon={<Mail className="text-gray-400 w-5 h-5" />}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
-              />
+          )}
+  
+          {infoMessage && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-md flex items-center text-sm">
+              <Info className="w-5 h-5 mr-2" />
+              {infoMessage}
             </div>
-
-            <div className="space-y-1">
-              <Input
-                  type="password"
-                  placeholder="Password"
-                  icon={<Lock className="text-gray-400 w-5 h-5" />}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
-              />
-            </div>
-
-            <Button
-                type="submit"
-                className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200"
-                disabled={loading}
-            >
-              {loading ? 'Creating Account...' : 'Sign Up'}
-            </Button>
-          </form>
-
-          <div className="mt-8 text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link
-                  to="/login"
-                  className="text-gray-900 font-medium hover:underline focus:outline-none"
-              >
-                Login here
-              </Link>
-            </p>
+          )}
+  
+          <div className="space-y-1">
+            <Input
+              type="text"
+              placeholder="Full Name"
+              icon={<User className="text-gray-400 w-5 h-5" />}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
+            />
           </div>
+  
+          <div className="space-y-1">
+            <Input
+              type="email"
+              placeholder="Email (@pec.edu.in)"
+              icon={<Mail className="text-gray-400 w-5 h-5" />}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
+            />
+          </div>
+  
+          <div className="space-y-1">
+            <Input
+              type="password"
+              placeholder="Password"
+              icon={<Lock className="text-gray-400 w-5 h-5" />}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-gray-300 focus:ring-2 focus:ring-gray-100 transition-all"
+            />
+          </div>
+  
+          <Button
+            type="submit"
+            className="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-gray-800 active:bg-gray-950 transition-colors duration-200"
+            disabled={loading}
+          >
+            {loading ? 'Creating Account...' : 'Sign Up'}
+          </Button>
+        </form>
+  
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-600">
+            Already have an account?{' '}
+            <Link
+              to="/login"
+              className="text-gray-900 font-medium hover:underline focus:outline-none"
+            >
+              Login here
+            </Link>
+          </p>
         </div>
       </div>
-  );
+    </div>
+  );  
 };
 
 export default Signup;

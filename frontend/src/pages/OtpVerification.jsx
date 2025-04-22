@@ -114,8 +114,8 @@ const OtpVerification = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0ea5e9]">
-      <div className="bg-white px-8 py-10 rounded-xl shadow-sm border border-blue-50 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0ea5e9] px-2">
+      <div className="bg-white px-4 py-8 sm:px-8 sm:py-10 rounded-xl shadow-sm border border-blue-50 w-full max-w-xs sm:max-w-md">
         <div className="flex items-center mb-6">
           <button
             onClick={() => navigate('/signup')}
@@ -128,15 +128,15 @@ const OtpVerification = () => {
               Verify Your Email
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-               We've sent a verification code to <span className="font-medium">{email}</span>. 
-            <br />
-            <span className="text-gray-500">
-              If you don't see it, please check your spam or promotions folder.
-            </span>
+              We've sent a verification code to <span className="font-medium">{email}</span>.
+              <br />
+              <span className="text-gray-500">
+                If you don't see it, please check your spam or promotions folder.
+              </span>
             </p>
           </div>
         </div>
-
+  
         <form className="mt-6 space-y-5" onSubmit={handleVerify}>
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md flex items-center text-sm">
@@ -144,7 +144,7 @@ const OtpVerification = () => {
               {error}
             </div>
           )}
-
+  
           <div className="flex gap-2 justify-center">
             {otp.map((digit, index) => (
               <div key={index} className="relative">
@@ -155,14 +155,12 @@ const OtpVerification = () => {
                   onChange={(e) => handleChange(e.target, index)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   ref={(el) => (inputsRef.current[index] = el)}
-                  className={`w-12 h-12 text-center rounded-lg focus:outline-none focus:ring-2 text-lg transition-all duration-300 ${
-                    isVerified 
-                      ? 'border-green-500 bg-green-50 text-green-700 focus:ring-green-300' 
+                  className={`w-10 h-10 sm:w-12 sm:h-12 text-center rounded-lg focus:outline-none focus:ring-2 text-lg transition-all duration-300 ${
+                    isVerified
+                      ? 'border-green-500 bg-green-50 text-green-700 focus:ring-green-300'
                       : 'border border-gray-300 focus:ring-gray-300'
                   }`}
-                  style={{
-                    borderWidth: isVerified ? '2px' : '1px'
-                  }}
+                  style={{ borderWidth: isVerified ? '2px' : '1px' }}
                 />
                 {isVerified && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 animate-fadeIn">
@@ -172,27 +170,29 @@ const OtpVerification = () => {
               </div>
             ))}
           </div>
-
+  
           <div className="text-center text-sm text-gray-600">
             Time remaining: {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}
           </div>
-
+  
           <Button
             type="submit"
             className={`w-full py-3 font-medium rounded-lg transition-colors duration-300 ${
-              isVerified 
-                ? 'bg-green-500 hover:bg-green-600 active:bg-green-700' 
+              isVerified
+                ? 'bg-green-500 hover:bg-green-600 active:bg-green-700'
                 : 'bg-blue-600 hover:bg-gray-800 active:bg-gray-950'
             } text-white`}
             disabled={loading}
           >
             {loading ? 'Verifying...' : isVerified ? 'Verified!' : 'Verify Email'}
           </Button>
-
+  
           <div className="text-center">
             <button
               type="button"
-              className={`text-gray-900 font-medium hover:underline focus:outline-none ${isResendDisabled || loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`text-gray-900 font-medium hover:underline focus:outline-none ${
+                isResendDisabled || loading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
               onClick={handleResend}
               disabled={isResendDisabled || loading}
             >
@@ -202,7 +202,7 @@ const OtpVerification = () => {
         </form>
       </div>
     </div>
-  );
+  );  
 };
 
 // Add this animation to your global CSS or in a style tag

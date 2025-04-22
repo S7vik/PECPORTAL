@@ -21,7 +21,6 @@ const CourseCard = ({ course, onClick }) => {
         for (let i = 0; i < courseCode.length; i++) {
             hash = (hash + courseCode.charCodeAt(i)) % colors.length;
         }
-
         return colors[hash];
     };
 
@@ -29,34 +28,46 @@ const CourseCard = ({ course, onClick }) => {
 
     return (
         <div
-            className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer"
-            onClick={onClick}
-        >
-            <div className={`h-2 rounded-t-xl bg-gradient-to-r ${colorClass}`} />
-            <div className="p-5">
-                <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-800">{course.courseName}</h3>
-                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded text-gray-600">
-            {course.courseCode}
-          </span>
-                </div>
+  className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500"
+  onClick={onClick}
+  tabIndex={0} // makes div focusable for keyboard users
+  role="button" // indicates clickable element for screen readers
+  onKeyPress={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      onClick();
+    }
+  }}
+>
+  {/* Top colored bar */}
+  <div className={`h-2 rounded-t-xl bg-gradient-to-r ${colorClass}`} />
 
-                <p className="text-gray-600 text-sm mt-2">
-                    {course.description
-                        ? (course.description.length > 100
-                            ? course.description.slice(0, 100) + '...'
-                            : course.description)
-                        : 'No description available'}
-                </p>
+  <div className="p-4 sm:p-5">
+    <div className="flex items-center justify-between">
+      <h3 className="font-semibold text-gray-800 text-base sm:text-lg truncate">
+        {course.courseName}
+      </h3>
+      <span className="text-xs sm:text-sm font-mono bg-gray-100 px-2 py-1 rounded text-gray-600 whitespace-nowrap">
+        {course.courseCode}
+      </span>
+    </div>
 
-                <div className="mt-4 flex items-center justify-between">
-          <span className="text-sm text-gray-500">
-            {course.instructor ? `Instructor: ${course.instructor}` : 'Semester ' + course.semester}
-          </span>
-                    <ChevronRight className="w-5 h-5 text-gray-400" />
-                </div>
-            </div>
-        </div>
+    <p className="text-gray-600 text-sm mt-2 line-clamp-3">
+      {course.description
+        ? course.description
+        : 'No description available'}
+    </p>
+
+    <div className="mt-4 flex items-center justify-between text-sm text-gray-500">
+      <span>
+        {course.instructor
+          ? `Instructor: ${course.instructor}`
+          : `Semester ${course.semester}`}
+      </span>
+      <ChevronRight className="w-5 h-5 text-gray-400" />
+    </div>
+  </div>
+</div>
+
     );
 };
 

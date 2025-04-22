@@ -81,7 +81,7 @@ const PECPortalLandingPage = () => {
                 </button>
               </div>
             </div>
-            <div className="mt-10 lg:mt-0 lg:w-1/2 flex justify-center  ">
+            <div className="mt-10 lg:mt-0 lg:w-1/2 flex justify-center ">
               <img 
                 src="/peclogo.png" 
                 alt="Student dashboard preview" 

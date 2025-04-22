@@ -5,6 +5,7 @@ import Signup from './pages/Signup';
 import OtpVerification from './pages/OtpVerification';
 import Dashboard from './pages/Dashboard';
 import {AuthProvider, useAuth} from "./components/AuthContext.jsx";
+import ForgotPassword from './pages/ForgotPassword';
 import './App.css';
 
 // Protected route component
@@ -65,6 +66,7 @@ function AppRoutes() {
                     </ProtectedRoute>
                 }
             />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
             {/* Fallback route - redirect to landing page if path doesn't match */}
             <Route path="*" element={<Navigate to="/" />} />
