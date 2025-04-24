@@ -64,11 +64,13 @@ const AdminCourseForm = ({
             }
 
             onSubmit(response.data);
+
         } catch (err) {
             console.error('Course form error:', err);
             setError(err.response?.data || err.message || 'Failed to save course');
         } finally {
             setLoading(false);
+            onNavigate('/admin/courses'); // Redirect to courses page after submission
         }
     };
 
