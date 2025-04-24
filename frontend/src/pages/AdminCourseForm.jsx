@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useNavigate } from 'react';
 import api from '../api/axios';
 import PropTypes from "prop-types";
 
@@ -70,7 +70,7 @@ const AdminCourseForm = ({
             setError(err.response?.data || err.message || 'Failed to save course');
         } finally {
             setLoading(false);
-            onNavigate('/admin/courses'); // Redirect to courses page after submission
+            useNavigate('/dashboard'); // Redirect to courses page after submission
         }
     };
 
