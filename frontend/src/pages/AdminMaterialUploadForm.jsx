@@ -76,6 +76,7 @@ const AdminMaterialUploadForm = ({ courseId, onSuccess, onCancel }) => {
             console.log("API response:", response);
 
             onSuccess(response.data);
+            onNavigate('/admin/materials');
         } catch (err) {
             console.error("Detailed error:", err);
             console.error('Upload error:', err);
