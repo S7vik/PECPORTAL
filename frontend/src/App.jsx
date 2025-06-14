@@ -6,6 +6,8 @@ import OtpVerification from './pages/OtpVerification';
 import Dashboard from './pages/Dashboard';
 import {AuthProvider, useAuth} from "./components/AuthContext.jsx";
 import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPasssword.jsx';
+import VerifyResetOtp from './pages/VerifyResetOtp.jsx';
 import './App.css';
 
 // Protected route component
@@ -56,6 +58,9 @@ function AppRoutes() {
                 path="/otp-verification"
                 element={isAuthenticated ? <Navigate to="/dashboard" /> : <OtpVerification />}
             />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+             <Route path="/verify-reset-otp" element={<VerifyResetOtp />} />
+             <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Protected routes */}
             <Route
@@ -66,7 +71,7 @@ function AppRoutes() {
                     </ProtectedRoute>
                 }
             />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            
 
             {/* Fallback route - redirect to landing page if path doesn't match */}
             <Route path="*" element={<Navigate to="/" />} />
