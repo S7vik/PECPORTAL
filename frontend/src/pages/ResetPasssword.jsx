@@ -4,6 +4,7 @@ import { AlertCircle, CheckCircle, Lock } from 'lucide-react';
 import Button from '../components/Button';
 import Input from '../components/Input';
 
+
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,7 +20,7 @@ const ResetPassword = () => {
     setSuccess('');
     setLoading(true);
     try {
-      const res = await fetch(`/api/user/verify-reset-otp`, {
+      const res = await fetch(`https://pecportal.store/api/user/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, resetToken, newPassword })
